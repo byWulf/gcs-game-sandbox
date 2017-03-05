@@ -1,0 +1,22 @@
+{
+  "name": "gcs-game-sandbox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/byWulf/gcs-game-sandbox.git"
+  },
+  "author": "byWulf",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/byWulf/gcs-game-sandbox/issues"
+  },
+  "homepage": "https://github.com/byWulf/gcs-game-sandbox#readme",
+  "dependencies": {
+    "gcs-game-base-nodejs": "byWulf/gcs-game-base-nodejs"
+  }
+}
