@@ -4,6 +4,15 @@
   "name": "Spielplatz",
   "description": "Hier werden neue Features entwickelt und alles ausprobiert, was man sich nur vorstellen kann.",
   "version": "1.0.0",
+  
+  "minPlayers": 4,
+  "maxPlayers": 4,
+  "slotColors": [
+    "#ff0000",
+    "#ffff00",
+    "#00ff00",
+    "#0000ff"
+  ],
 
   "command": "node index.js"
 }
