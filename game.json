@@ -2,7 +2,7 @@
   "key": "gcs-game-sandbox",
 
   "name": "Spielplatz",
-  "descriptions": "Hier werden neue Features entwickelt und alles ausprobiert, was man sich nur vorstellen kann.",
+  "description": "Hier werden neue Features entwickelt und alles ausprobiert, was man sich nur vorstellen kann.",
   "version": "1.0.0",
 
   "command": "node index.js"
