@@ -3,48 +3,52 @@ var GameBase = require('gcs-game-base');
 GameBase.Game.init(function() {
     //Create all material
     var board = new GameBase.Elements.Type.Board();
-    board.setWidth(30);
-    board.setHeight(30);
+    board.setWidth(0.3);
+    board.setHeight(0.3);
     board.setImage('board.png');
     GameBase.Elements.registerElement(board);
 
     var pieceContainer = new GameBase.Elements.Type.PieceContainer();
     pieceContainer.moveTo(board);
+    
+    var calc = function(pixel, maxPixel) {
+        return 0.3/maxPixel*pixel-0.15;
+    };
 
-    pieceContainer.setPositions({
-        1: {x: 30/357*113, y: 30/295*33, next: [17]},
-        2: {x: 30/357*144, y: 30/295*34, next: [17]},
-        3: {x: 30/357*114, y: 30/295*57, next: [17]},
-        4: {x: 30/357*143, y: 30/295*57, next: [17]},
-        5: {x: 30/357*290, y: 30/295*81, next: [21]},
-        6: {x: 30/357*309, y: 30/295*82, next: [21]},
-        7: {x: 30/357*281, y: 30/295*109, next: [21]},
-        8: {x: 30/357*305, y: 30/295*111, next: [21]},
-        9: {x: 30/357*222, y: 30/295*228, next: [25]},
-        10: {x: 30/357*250, y: 30/295*227, next: [25]},
-        11: {x: 30/357*226, y: 30/295*251, next: [25]},
-        12: {x: 30/357*258, y: 30/295*248, next: [25]},
-        13: {x: 30/357*49, y: 30/295*167, next: [29]},
-        14: {x: 30/357*73, y: 30/295*166, next: [29]},
-        15: {x: 30/357*47, y: 30/295*192, next: [29]},
-        16: {x: 30/357*69, y: 30/295*194, next: [29]},
-        17: {x: 30/357*114, y: 30/295*81, next: [18]},
-        18: {x: 30/357*147, y: 30/295*84, next: [19]},
-        19: {x: 30/357*181, y: 30/295*85, next: [20]},
-        20: {x: 30/357*221, y: 30/295*84, next: [21]},
-        21: {x: 30/357*257, y: 30/295*84, next: [22]},
-        22: {x: 30/357*258, y: 30/295*113, next: [23]},
-        23: {x: 30/357*257, y: 30/295*141, next: [24]},
-        24: {x: 30/357*254, y: 30/295*178, next: [25]},
-        25: {x: 30/357*252, y: 30/295*205, next: [26]},
-        26: {x: 30/357*224, y: 30/295*204, next: [27]},
-        27: {x: 30/357*190, y: 30/295*200, next: [28]},
-        28: {x: 30/357*143, y: 30/295*199, next: [29]},
-        29: {x: 30/357*102, y: 30/295*192, next: [30]},
-        30: {x: 30/357*100, y: 30/295*167, next: [31]},
-        31: {x: 30/357*102, y: 30/295*137, next: [32]},
-        32: {x: 30/357*109, y: 30/295*109, next: [17]}
-    });
+    pieceContainer.setPositions([
+        {index: 1, x: calc(113, 357), y: calc(33, 295), next: [17]},
+        {index: 2, x: calc(144, 357), y: calc(34, 295), next: [17]},
+        {index: 3, x: calc(114, 357), y: calc(57, 295), next: [17]},
+        {index: 4, x: calc(143, 357), y: calc(57, 295), next: [17]},
+        {index: 5, x: calc(290, 357), y: calc(81, 295), next: [21]},
+        {index: 6, x: calc(309, 357), y: calc(82, 295), next: [21]},
+        {index: 7, x: calc(281, 357), y: calc(109, 295), next: [21]},
+        {index: 8, x: calc(305, 357), y: calc(111, 295), next: [21]},
+        {index: 9, x: calc(222, 357), y: calc(228, 295), next: [25]},
+        {index: 10, x: calc(250, 357), y: calc(227, 295), next: [25]},
+        {index: 11, x: calc(226, 357), y: calc(251, 295), next: [25]},
+        {index: 12, x: calc(258, 357), y: calc(248, 295), next: [25]},
+        {index: 13, x: calc(49, 357), y: calc(167, 295), next: [29]},
+        {index: 14, x: calc(73, 357), y: calc(166, 295), next: [29]},
+        {index: 15, x: calc(47, 357), y: calc(192, 295), next: [29]},
+        {index: 16, x: calc(69, 357), y: calc(194, 295), next: [29]},
+        {index: 17, x: calc(114, 357), y: calc(81, 295), next: [18]},
+        {index: 18, x: calc(147, 357), y: calc(84, 295), next: [19]},
+        {index: 19, x: calc(181, 357), y: calc(85, 295), next: [20]},
+        {index: 20, x: calc(221, 357), y: calc(84, 295), next: [21]},
+        {index: 21, x: calc(257, 357), y: calc(84, 295), next: [22]},
+        {index: 22, x: calc(258, 357), y: calc(113, 295), next: [23]},
+        {index: 23, x: calc(257, 357), y: calc(141, 295), next: [24]},
+        {index: 24, x: calc(254, 357), y: calc(178, 295), next: [25]},
+        {index: 25, x: calc(252, 357), y: calc(205, 295), next: [26]},
+        {index: 26, x: calc(224, 357), y: calc(204, 295), next: [27]},
+        {index: 27, x: calc(190, 357), y: calc(200, 295), next: [28]},
+        {index: 28, x: calc(143, 357), y: calc(199, 295), next: [29]},
+        {index: 29, x: calc(102, 357), y: calc(192, 295), next: [30]},
+        {index: 30, x: calc(100, 357), y: calc(167, 295), next: [31]},
+        {index: 31, x: calc(102, 357), y: calc(137, 295), next: [32]},
+        {index: 32, x: calc(109, 357), y: calc(109, 295), next: [17]}
+    ]);
     GameBase.Elements.registerElement(pieceContainer);
 
     var pieces = {};
@@ -52,9 +56,9 @@ GameBase.Game.init(function() {
         pieces[i] = {};
         for (var j = 0; j < 4; j++) {
             pieces[i][j] = new GameBase.Elements.Type.Piece();
-            pieces[i][j].setWidth(1);
-            pieces[i][j].setHeight(2);
-            pieces[i][j].setDepth(2);
+            pieces[i][j].setWidth(0.01);
+            pieces[i][j].setHeight(0.02);
+            pieces[i][j].setDepth(0.01);
             pieces[i][j].setModel('figure.obj');
             GameBase.Elements.registerElement(pieces[i][j]);
         }
@@ -73,4 +77,18 @@ GameBase.Game.init(function() {
     }
 
     dice.moveTo(GameBase.Elements.Default.CenterContainer);
+
+    //Spielen
+
+    setInterval(function() {
+        var playerIndex = Math.floor(Math.random() * 4);
+        var pieceIndex = Math.floor(Math.random() * 4);
+        var movement = Math.floor(Math.random() * 6);
+
+        var nextIndexes = pieceContainer.calculateNextIndexes(pieces[playerIndex][pieceIndex].getParent().data.index, movement);
+
+        if (nextIndexes.length) {
+            pieces[playerIndex][pieceIndex].moveTo(pieceContainer, {index: nextIndexes[0]})
+        }
+    }, 2000);
 });
