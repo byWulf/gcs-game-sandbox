@@ -51,6 +51,12 @@ GameBase.Game.init(function() {
     ]);
     GameBase.Elements.registerElement(pieceContainer);
 
+    var colors = [
+        "#ff0000",
+        "#ffff00",
+        "#00ff00",
+        "#0000ff"
+    ];
     var pieces = {};
     for (var i = 0; i < 4; i++) {
         pieces[i] = {};
@@ -60,6 +66,7 @@ GameBase.Game.init(function() {
             pieces[i][j].setHeight(0.02);
             pieces[i][j].setDepth(0.01);
             pieces[i][j].setModel('figure.obj');
+            pieces[i][j].setColor(colors[i]);
             GameBase.Elements.registerElement(pieces[i][j]);
         }
     }
