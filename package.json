@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/byWulf/gcs-game-sandbox#readme",
   "dependencies": {
-    "gcs-game-base-nodejs": "file:../gcs-game-base-nodejs"
+    "gcs-game-base-nodejs": "file:../gcs-game-base-nodejs",
+    "sleep": "^5.1.0"
   }
 }

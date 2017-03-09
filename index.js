@@ -10,7 +10,8 @@ GameBase.Game.init(function() {
 
     var pieceContainer = new GameBase.Elements.Type.PieceContainer();
     pieceContainer.moveTo(board);
-    
+    pieceContainer.setStackElementRadius(1.5);
+
     var calc = function(pixel, maxPixel) {
         return 30/maxPixel*pixel-15;
     };
@@ -84,7 +85,7 @@ GameBase.Game.init(function() {
 
     //Spielen
 
-    setInterval(function() {
+    /*setInterval(function() {
         var playerIndex = Math.floor(Math.random() * 4);
         var pieceIndex = Math.floor(Math.random() * 4);
         var movement = Math.floor(Math.random() * 6);
@@ -94,5 +95,13 @@ GameBase.Game.init(function() {
         if (nextIndexes.length) {
             pieces[playerIndex][pieceIndex].moveTo(pieceContainer, {index: nextIndexes[0]})
         }
-    }, 2000);
+    }, 2000);*/
+
+    var sleep = require('sleep');
+    for (var i = 0; i < 4; i++) {
+        for (var j = 0; j < 4; j++) {
+            pieces[i][j].moveTo(pieceContainer, {index: 28});
+            sleep.sleep(2);
+        }
+    }
 });
