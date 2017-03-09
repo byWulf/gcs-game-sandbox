@@ -3,8 +3,8 @@ var GameBase = require('gcs-game-base');
 GameBase.Game.init(function() {
     //Create all material
     var board = new GameBase.Elements.Type.Board();
-    board.setWidth(0.3);
-    board.setHeight(0.3);
+    board.setWidth(30);
+    board.setHeight(30);
     board.setImage('board.png');
     GameBase.Elements.registerElement(board);
 
@@ -12,7 +12,7 @@ GameBase.Game.init(function() {
     pieceContainer.moveTo(board);
     
     var calc = function(pixel, maxPixel) {
-        return 0.3/maxPixel*pixel-0.15;
+        return 30/maxPixel*pixel-15;
     };
 
     pieceContainer.setPositions([
@@ -62,9 +62,6 @@ GameBase.Game.init(function() {
         pieces[i] = {};
         for (var j = 0; j < 4; j++) {
             pieces[i][j] = new GameBase.Elements.Type.Piece();
-            pieces[i][j].setWidth(0.01);
-            pieces[i][j].setHeight(0.02);
-            pieces[i][j].setDepth(0.01);
             pieces[i][j].setModel('figure.obj');
             pieces[i][j].setColor(colors[i]);
             GameBase.Elements.registerElement(pieces[i][j]);
