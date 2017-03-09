@@ -76,6 +76,8 @@ GameBase.Game.init(function() {
     board.moveTo(GameBase.Elements.Default.CenterContainer);
 
     for (var i = 0; i < 4; i++) {
+        if (GameBase.Players.slots[i].user === null) continue;
+
         for (var j = 0; j < 4; j++) {
             pieces[i][j].moveTo(pieceContainer, {index: i*4+j+1})
         }
@@ -83,25 +85,82 @@ GameBase.Game.init(function() {
 
     dice.moveTo(GameBase.Elements.Default.CenterContainer);
 
-    //Spielen
 
-    /*setInterval(function() {
-        var playerIndex = Math.floor(Math.random() * 4);
-        var pieceIndex = Math.floor(Math.random() * 4);
-        var movement = Math.floor(Math.random() * 6);
-
-        var nextIndexes = pieceContainer.calculateNextIndexes(pieces[playerIndex][pieceIndex].getParent().data.index, movement);
-
-        if (nextIndexes.length) {
-            pieces[playerIndex][pieceIndex].moveTo(pieceContainer, {index: nextIndexes[0]})
-        }
-    }, 2000);*/
-
-    var sleep = require('sleep');
-    for (var i = 0; i < 4; i++) {
+    GameBase.Players.eventEmitter.on('user.joined', function(slotIndex) {
         for (var j = 0; j < 4; j++) {
-            pieces[i][j].moveTo(pieceContainer, {index: 28});
-            sleep.sleep(2);
+            pieces[slotIndex][j].moveTo(pieceContainer, {index: slotIndex*4+j+1})
         }
-    }
+    });
+    GameBase.Players.eventEmitter.on('user.switched', function(oldSlotIndex, newSlotIndex) {
+        for (var j = 0; j < 4; j++) {
+            pieces[oldSlotIndex][j].moveTo(GameBase.Elements.Default.PlayerContainer);
+        }
+
+        for (var j = 0; j < 4; j++) {
+            pieces[newSlotIndex][j].moveTo(pieceContainer, {index: newSlotIndex*4+j+1})
+        }
+    });
+    GameBase.Players.eventEmitter.on('user.left', function(slotIndex) {
+        for (var j = 0; j < 4; j++) {
+            pieces[slotIndex][j].moveTo(GameBase.Elements.Default.PackageContainer);
+        }
+    });
+    GameBase.Game.eventEmitter.on(GameBase.Game.Event.Started, function(slotIndex) {
+        //Spielen
+
+        /*setInterval(function() {
+            var playerIndex = Math.floor(Math.random() * 4);
+            while (GameBase.Players.slots[playerIndex].user === null) {
+                playerIndex = Math.floor(Math.random() * 4);
+            }
+            var pieceIndex = Math.floor(Math.random() * 4);
+            var movement = Math.floor(Math.random() * 6);
+
+            var nextIndexes = pieceContainer.calculateNextIndexes(pieces[playerIndex][pieceIndex].getParent().data.index, movement);
+
+            if (nextIndexes.length) {
+                pieces[playerIndex][pieceIndex].moveTo(pieceContainer, {index: nextIndexes[0]})
+            }
+        }, 2000);*/
+
+        var sendPieceToHome = function(piece, index) {
+            setTimeout(function() {
+                piece.moveTo(pieceContainer, {index: index});
+            }, 700);
+        };
+
+        setInterval(function() {
+            var playerIndex = Math.floor(Math.random() * 4);
+            while (GameBase.Players.slots[playerIndex].user === null) {
+                playerIndex = Math.floor(Math.random() * 4);
+            }
+
+            var pieceIndex = Math.floor(Math.random() * 4);
+            var movement = Math.floor(Math.random() * 6);
+
+            var nextIndexes = pieceContainer.calculateNextIndexes(pieces[playerIndex][pieceIndex].getParent().data.index, movement);
+
+            if (nextIndexes.length) {
+                for (var i = 0; i < 4; i++) {
+                    if (GameBase.Players.slots[i].user === null) continue;
+
+                    for (var j = 0; j < 4; j++) {
+                        if (pieces[i][j].getParent().data.index === nextIndexes[0] && (i !== playerIndex || j !== pieceIndex)) {
+                            sendPieceToHome(pieces[i][j], i*4+j+1);
+                        }
+                    }
+                }
+
+                pieces[playerIndex][pieceIndex].moveTo(pieceContainer, {index: nextIndexes[0]})
+            }
+        }, 2000);
+
+        /*var sleep = require('sleep');
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
+                pieces[i][j].moveTo(pieceContainer, {index: 28});
+                sleep.sleep(2);
+            }
+        }*/
+    });
 });
