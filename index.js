@@ -108,21 +108,6 @@ GameBase.Game.init(function() {
     GameBase.Game.eventEmitter.on(GameBase.Game.Event.Started, function(slotIndex) {
         //Spielen
 
-        /*setInterval(function() {
-            var playerIndex = Math.floor(Math.random() * 4);
-            while (GameBase.Players.slots[playerIndex].user === null) {
-                playerIndex = Math.floor(Math.random() * 4);
-            }
-            var pieceIndex = Math.floor(Math.random() * 4);
-            var movement = Math.floor(Math.random() * 6);
-
-            var nextIndexes = pieceContainer.calculateNextIndexes(pieces[playerIndex][pieceIndex].getParent().data.index, movement);
-
-            if (nextIndexes.length) {
-                pieces[playerIndex][pieceIndex].moveTo(pieceContainer, {index: nextIndexes[0]})
-            }
-        }, 2000);*/
-
         var sendPieceToHome = function(piece, index) {
             setTimeout(function() {
                 piece.moveTo(pieceContainer, {index: index});
@@ -155,12 +140,8 @@ GameBase.Game.init(function() {
             }
         }, 2000);
 
-        /*var sleep = require('sleep');
-        for (var i = 0; i < 4; i++) {
-            for (var j = 0; j < 4; j++) {
-                pieces[i][j].moveTo(pieceContainer, {index: 28});
-                sleep.sleep(2);
-            }
-        }*/
+        setInterval(function() {
+            dice.roll();
+        }, 5000);
     });
 });
