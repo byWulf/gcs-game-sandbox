@@ -71,6 +71,10 @@ GameBase.Game.init(function() {
 
     var dice = new GameBase.Elements.Type.Dice();
     GameBase.Elements.registerElement(dice);
+    dice.on('dice.roll', function(slotIndex, data) {
+        dice.roll();
+        dice.canBeRolledBy(GameBase.Players.getNextSlotIndex(slotIndex));
+    });
 
     //Ausbreiten
     board.moveTo(GameBase.Elements.Default.CenterContainer);
@@ -108,6 +112,16 @@ GameBase.Game.init(function() {
     GameBase.Game.eventEmitter.on(GameBase.Game.Event.Started, function(slotIndex) {
         //Spielen
 
+        var startingPlayer = 0;
+        for (var j = 0; j < 4; j++) {
+            if (GameBase.Players.slots[j].user !== null) {
+                startinPlayer = j;
+                break;
+            }
+        }
+
+        dice.canBeRolledBy(startingPlayer);
+
         var sendPieceToHome = function(piece, index) {
             setTimeout(function() {
                 piece.moveTo(pieceContainer, {index: index});
@@ -139,9 +153,5 @@ GameBase.Game.init(function() {
                 pieces[playerIndex][pieceIndex].moveTo(pieceContainer, {index: nextIndexes[0]})
             }
         }, 2000);
-
-        setInterval(function() {
-            dice.roll();
-        }, 5000);
     });
 });
