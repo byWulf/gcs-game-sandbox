@@ -115,7 +115,7 @@ GameBase.Game.init(function() {
         var startingPlayer = 0;
         for (var j = 0; j < 4; j++) {
             if (GameBase.Players.slots[j].user !== null) {
-                startinPlayer = j;
+                startingPlayer = j;
                 break;
             }
         }
