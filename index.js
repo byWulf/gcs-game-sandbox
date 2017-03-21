@@ -1,13 +1,19 @@
 var GameBase = require('gcs-game-base');
+var Sleep = require('sleep');
 
 GameBase.Game.init(function() {
-    //Create all material
+    /**
+     * Create all material
+     */
+
+    //Board
     var board = new GameBase.Elements.Type.Board();
     board.setWidth(30);
     board.setHeight(30);
     board.setImage('board.png');
     GameBase.Elements.registerElement(board);
 
+    //PieceContainer
     var pieceContainer = new GameBase.Elements.Type.PieceContainer();
     pieceContainer.moveTo(board);
     pieceContainer.setStackElementRadius(1.5);
@@ -52,6 +58,7 @@ GameBase.Game.init(function() {
     ]);
     GameBase.Elements.registerElement(pieceContainer);
 
+    //Pieces
     var colors = [
         "#ff0000",
         "#ffff00",
@@ -65,30 +72,32 @@ GameBase.Game.init(function() {
             pieces[i][j] = new GameBase.Elements.Type.Piece();
             pieces[i][j].setModel('figure.obj');
             pieces[i][j].setColor(colors[i]);
+            pieces[i][j].userData.startIndex = i * 4 + j + 1;
             GameBase.Elements.registerElement(pieces[i][j]);
         }
     }
 
+    //Die
     var dice = new GameBase.Elements.Type.Dice();
     GameBase.Elements.registerElement(dice);
-    dice.onAfterRoll = function(slotIndex, value) {
-        this.canBeRolledBy(GameBase.Players.getNextSlotIndex(slotIndex));
-    };
 
-    //Ausbreiten
+    /**
+     * Put the material on the table
+     */
     board.moveTo(GameBase.Elements.Default.CenterContainer);
 
     for (var i = 0; i < 4; i++) {
         if (GameBase.Players.slots[i].user === null) continue;
 
         for (var j = 0; j < 4; j++) {
-            pieces[i][j].moveTo(pieceContainer, {index: i*4+j+1})
+            pieces[i][j].moveTo(pieceContainer, {index: pieces[i][j].userData.startIndex})
         }
     }
 
     dice.moveTo(GameBase.Elements.Default.CenterContainer);
 
 
+    //When players join, put their personal material on the table. When they leave, put it back to the packageContainer
     GameBase.Players.eventEmitter.on('user.joined', function(slotIndex) {
         for (var j = 0; j < 4; j++) {
             pieces[slotIndex][j].moveTo(pieceContainer, {index: slotIndex*4+j+1})
@@ -108,9 +117,12 @@ GameBase.Game.init(function() {
             pieces[slotIndex][j].moveTo(GameBase.Elements.Default.PackageContainer);
         }
     });
-    GameBase.Game.eventEmitter.on(GameBase.Game.Event.Started, function(slotIndex) {
-        //Spielen
 
+    /**
+     * Game start - Here's the game logic
+     */
+    GameBase.Game.eventEmitter.on(GameBase.Game.Event.Started, function(slotIndex) {
+        //Determine starting player and let him roll the die
         var startingPlayer = 0;
         for (var j = 0; j < 4; j++) {
             if (GameBase.Players.slots[j].user !== null) {
@@ -121,38 +133,42 @@ GameBase.Game.init(function() {
 
         dice.canBeRolledBy(startingPlayer);
 
+        //After rolling, let the player move his pieces. If no move is possible, let the next player roll the die.
+        dice.onAfterRoll = function(slotIndex, value) {
+            var hasTargets = false;
+            for (var i = 0; i < 4; i++) {
+                var canBeMovedBy = [];
+                var targetIndexes = pieceContainer.calculateNextIndexes(pieces[slotIndex][i].getParent().data.index, value);
+                for (var j = 0; j < targetIndexes.length; j++) {
+                    hasTargets = true;
+                    canBeMovedBy.push({slotIndex: slotIndex, target: {id: pieceContainer.getId(), data: {index: targetIndexes[j]}}});
+                }
+                pieces[slotIndex][i].canBeMovedBy(canBeMovedBy);
+            }
 
-/*
-        var sendPieceToHome = function(piece, index) {
-            setTimeout(function() {
-                piece.moveTo(pieceContainer, {index: index});
-            }, 700);
+            if (!hasTargets) {
+                dice.canBeRolledBy(GameBase.Players.getNextSlotIndex(slotIndex));
+            }
         };
 
-        setInterval(function() {
-            var playerIndex = Math.floor(Math.random() * 4);
-            while (GameBase.Players.slots[playerIndex].user === null) {
-                playerIndex = Math.floor(Math.random() * 4);
-            }
+        //After moving his piece, check if a piece was already on the pieceContainerIndex and kick it back into the base.
+        //After that, let the next player roll the die
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
+                pieces[i][j].onAfterMove = function(slotIndex, target) {
+                    var indexPieces = pieceContainer.getChildren(target.data.index);
+                    for (var k = 0; k < indexPieces.length; k++) {
+                        if (indexPieces[k] === this) continue;
 
-            var pieceIndex = Math.floor(Math.random() * 4);
-            var movement = Math.floor(Math.random() * 6);
-
-            var nextIndexes = pieceContainer.calculateNextIndexes(pieces[playerIndex][pieceIndex].getParent().data.index, movement);
-
-            if (nextIndexes.length) {
-                for (var i = 0; i < 4; i++) {
-                    if (GameBase.Players.slots[i].user === null) continue;
-
-                    for (var j = 0; j < 4; j++) {
-                        if (pieces[i][j].getParent().data.index === nextIndexes[0] && (i !== playerIndex || j !== pieceIndex)) {
-                            sendPieceToHome(pieces[i][j], i*4+j+1);
-                        }
+                        indexPieces[k].moveTo(pieceContainer, {index: indexPieces[k].userData.startIndex});
                     }
-                }
+                    if (indexPieces.length) {
+                        Sleep.sleep(1);
+                    }
 
-                pieces[playerIndex][pieceIndex].moveTo(pieceContainer, {index: nextIndexes[0]})
+                    dice.canBeRolledBy(GameBase.Players.getNextSlotIndex(slotIndex));
+                }
             }
-        }, 2000);*/
+        }
     });
 });
