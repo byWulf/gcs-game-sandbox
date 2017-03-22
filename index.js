@@ -162,7 +162,7 @@ GameBase.Game.init(function() {
 
                         indexPieces[k].moveTo(pieceContainer, {index: indexPieces[k].userData.startIndex});
                     }
-                    if (indexPieces.length) {
+                    if (indexPieces.length > 1) {
                         Sleep.sleep(1);
                     }
 
