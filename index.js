@@ -138,7 +138,7 @@ GameBase.Game.init(function() {
             var hasTargets = false;
             for (var i = 0; i < 4; i++) {
                 var canBeMovedBy = [];
-                var targetIndexes = pieceContainer.calculateNextIndexes(pieces[slotIndex][i].getParent().data.index, value);
+                var targetIndexes = pieceContainer.calculateNextIndexes(pieces[slotIndex][i].getParent().data.index, value, slotIndex);
                 for (var j = 0; j < targetIndexes.length; j++) {
                     hasTargets = true;
                     canBeMovedBy.push({slotIndex: slotIndex, target: {id: pieceContainer.getId(), data: {index: targetIndexes[j]}}});
