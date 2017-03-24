@@ -87,7 +87,7 @@ GameBase.Game.init(function() {
     board.moveTo(GameBase.Elements.Default.CenterContainer);
 
     for (var i = 0; i < 4; i++) {
-        if (GameBase.Players.slots[i].user === null) continue;
+        if (GameBase.Players.getSlot(i).getUser() === null) continue;
 
         for (var j = 0; j < 4; j++) {
             pieces[i][j].moveTo(pieceContainer, {index: pieces[i][j].userData.startIndex})
@@ -123,15 +123,7 @@ GameBase.Game.init(function() {
      */
     GameBase.Game.eventEmitter.on(GameBase.Game.Event.Started, function(slotIndex) {
         //Determine starting player and let him roll the die
-        var startingPlayer = 0;
-        for (var j = 0; j < 4; j++) {
-            if (GameBase.Players.slots[j].user !== null) {
-                startingPlayer = j;
-                break;
-            }
-        }
-
-        dice.canBeRolledBy(startingPlayer);
+        dice.canBeRolledBy(GameBase.Players.getFilledSlots()[0].getIndex());
 
         //After rolling, let the player move his pieces. If no move is possible, let the next player roll the die.
         dice.onAfterRoll = function(slotIndex, value) {
