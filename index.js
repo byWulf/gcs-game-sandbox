@@ -73,6 +73,7 @@ GameBase.Game.init(function() {
             pieces[i][j].setModel('figure.obj');
             pieces[i][j].setColor(colors[i]);
             pieces[i][j].userData.startIndex = i * 4 + j + 1;
+            pieces[i][j].userData.player = i;
             GameBase.Elements.registerElement(pieces[i][j]);
         }
     }
@@ -127,6 +128,8 @@ GameBase.Game.init(function() {
 
         //After rolling, let the player move his pieces. If no move is possible, let the next player roll the die.
         dice.onAfterRoll = function(slotIndex, value) {
+            GameBase.Game.addNotification('%' + slotIndex + ' würfelt eine ' + value + '.');
+
             var hasTargets = false;
             for (var i = 0; i < 4; i++) {
                 var canBeMovedBy = [];
@@ -152,6 +155,7 @@ GameBase.Game.init(function() {
                     for (var k = 0; k < indexPieces.length; k++) {
                         if (indexPieces[k] === this) continue;
 
+                        GameBase.Game.addNotification('%' + slotIndex + ' schlägt eine Figur von %' + indexPieces[k].userData.player + '.');
                         indexPieces[k].moveTo(pieceContainer, {index: indexPieces[k].userData.startIndex});
                     }
                     if (indexPieces.length > 1) {
