@@ -6,12 +6,24 @@ GameBase.Game.init(function() {
      * Create all material
      */
 
+    var autoResizeContainer = new GameBase.Elements.Type.AutoResizeContainer();
+    GameBase.Elements.registerElement(autoResizeContainer);
+
+    var otherResizeContainer = new GameBase.Elements.Type.AutoResizeContainer();
+    GameBase.Elements.registerElement(otherResizeContainer);
+
     //TileContainer
     var tileContainer = new GameBase.Elements.Type.TileContainer();
     tileContainer.setTileForm('hexagonal');
     tileContainer.setStackElementRadius(5);
     tileContainer.setStackElementHeight(0.1);
     GameBase.Elements.registerElement(tileContainer);
+
+    var availableTileContainer = new GameBase.Elements.Type.TileContainer();
+    availableTileContainer.setTileForm('hexagonal');
+    availableTileContainer.setStackElementRadius(5);
+    availableTileContainer.setStackElementHeight(0.1);
+    GameBase.Elements.registerElement(availableTileContainer);
 
     //Tiles
     var tiles = {};
@@ -34,16 +46,22 @@ GameBase.Game.init(function() {
     /**
      * Put the material on the table
      */
-    tileContainer.moveTo(GameBase.Elements.Default.CenterContainer);
+    autoResizeContainer.moveTo(GameBase.Elements.Default.CenterContainer);
+
+    availableTileContainer.moveTo(autoResizeContainer, {x: 1, y: 0});
+    otherResizeContainer.moveTo(autoResizeContainer, {x: 0, y: 0});
+
+    tileContainer.moveTo(otherResizeContainer, {x: 0, y: 1});
+
     var playTiles = [];
     for (var x = -4; x <= 4; x++) {
         for (var y = -4; y <= 4; y++) {
             if (x == 0 && y == 0) {
-                tiles[x][y].moveTo(tileContainer, {x: x, y: y, index: 0});
+                tiles[x][y].moveTo(tileContainer, {x: 0, y: 0, index: 0});
                 tiles[x][y].flip();
                 tiles[x][y].setFrontVisibility(null);
             } else {
-                tiles[x][y].moveTo(tileContainer, {x: 3, y: 0, index: playTiles.length});
+                tiles[x][y].moveTo(availableTileContainer, {x: 0, y: 0, index: playTiles.length});
                 playTiles.push(tiles[x][y]);
             }
         }
@@ -58,21 +76,17 @@ GameBase.Game.init(function() {
 
         playTile.setFrontVisibility(null);
         playTile.flip();
-        playTile.moveTo(tileContainer, {x: 3, y: 2, index: 0});
+        playTile.moveTo(availableTileContainer, {x: 0, y: 2, index: 0});
         Sleep.sleep(1);
 
         var possibleMovements = {};
 
         for (var x = -4; x <= 4; x++) {
             for (var y = -4; y <= 4; y++) {
-                if (playTiles.indexOf(tiles[x][y]) > -1) continue;
-                if (tiles[x][y] === playTile) continue;
+                if (tiles[x][y].getParent().id !== tileContainer.getId()) continue;
 
                 var neighbours = tiles[x][y].getNeighbours();
                 for (var i = 0; i < neighbours.length; i++) {
-                    if (neighbours[i].x == 3 && neighbours[i].y == 0) continue;
-                    if (neighbours[i].x == 3 && neighbours[i].y == 2) continue;
-
                     if (neighbours[i].elements.length > 0) continue;
 
                     if (typeof possibleMovements[neighbours[i].y] == 'undefined') possibleMovements[neighbours[i].y] = {};
