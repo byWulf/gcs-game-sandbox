@@ -1,5 +1,5 @@
 var GameBase = require('gcs-game-base');
-var Sleep = require('sleep');
+const delay = require('delay');
 
 GameBase.Game.init(function() {
     /**
@@ -67,7 +67,7 @@ GameBase.Game.init(function() {
         }
     }
 
-    var startTurn = function() {
+    var startTurn = async function() {
         var playTile = playTiles.pop();
         if (!playTile) {
             GameBase.Game.finish();
@@ -77,7 +77,7 @@ GameBase.Game.init(function() {
         playTile.setFrontVisibility(null);
         playTile.flip();
         playTile.moveTo(availableTileContainer, {x: 0, y: 2, index: 0});
-        Sleep.sleep(1);
+        await delay(1000);
 
         var possibleMovements = {};
 
@@ -114,15 +114,15 @@ GameBase.Game.init(function() {
 
         playTile.canBeMovedBy(movements);
         playTile.canBeRotatedBy([{slotIndex: 0, rotation: 0}, {slotIndex: 0, rotation: 60}, {slotIndex: 0, rotation: 120}, {slotIndex: 0, rotation: 180}, {slotIndex: 0, rotation: 240}]);
-        playTile.onAfterMove = function() {
-            startTurn();
+        playTile.onAfterMove = async function() {
+            await startTurn();
         }
-    }
+    };
 
     /**
      * Game start - Here's the game logic
      */
-    GameBase.Game.eventEmitter.on(GameBase.Game.Event.Started, function(slotIndex) {
-        startTurn();
+    GameBase.Game.eventEmitter.on(GameBase.Game.Event.Started, async function(slotIndex) {
+        await startTurn();
     });
 });
